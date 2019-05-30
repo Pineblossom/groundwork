@@ -1,0 +1,64 @@
+<section class="todoapp">
+	<header class="header">
+		<h1>todos</h1>
+		<input 
+			class="new-todo" 
+			(keyup.enter) = "addTodo($event)" 
+			placeholder="What needs to be done?" 
+			autofocus
+		>
+	</header>
+	<!-- This section should be hidden by default and shown when there are todos -->
+	<ng-template #name [ngIf]='todos.length'>
+		<section class="main">
+			<input 
+				id="toggle-all" 
+				class="toggle-all" 
+				type="checkbox"
+				(change)="toggleAll = $event.target.checked"
+				[checked]="toggleAll"
+			>
+			<label for="toggle-all">Mark all as complete</label>
+			<ul class="todo-list" *ngFor="let todo of filterTodos">
+				<!-- These are here just to show the structure of the list items -->
+				<!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
+				<li [ngClass]="{'completed': todo.status, 'editing': currentEditing === todo}" [ngStyle]="{'color': todo.status ? 'green' : 'red'}">
+					<div class="view">
+						<input class="toggle" type="checkbox" [(ngModel)]="todo.status" checked>
+						<label (dblclick)="currentEditing = todo">{{todo.title}}</label>
+						<button class="destroy" (click)="delTodo($index)"></button>
+					</div>
+					<input class="edit" [value]="todo.title" (keyup)="handleEditKeyup($event)" (keyup.enter)="saveTodo(todo, $event)" (blur)="saveTodo(todo, $event)">
+				</li>
+
+			</ul>
+		</section>
+		<!-- This footer should hidden by default and shown when there are todos -->
+		<footer class="footer">
+			<!-- This should be `0 items left` by default -->
+			<span class="todo-count"><strong>{{remainingCount}}</strong> item left</span>
+			<!-- Remove this if you don't implement routing -->
+			<ul class="filters">
+				<li [ngClass]="{'selected': visibility === 'all'}">
+					<a href="#/">All</a>
+				</li>
+				<li [ngClass]="{'selected': visibility === 'active'}">
+					<a href="#/active">Active</a>
+				</li>
+				<li [ngClass]="{'selected': visibility === 'completed'}">
+					<a href="#/completed">Completed</a>
+				</li>
+			</ul>
+			<!-- Hidden if no completed items are left ↓ -->
+			<button class="clear-completed" (click)="clearAllDone()">Clear completed</button>
+		</footer>
+	</ng-template>
+</section>
+<footer class="info">
+	<p>Double-click to edit a todo</p>
+	<!-- Remove the below line ↓ -->
+	<p>Template by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
+	<!-- Change this out with your name and url ↓ -->
+	<p>Created by <a href="http://todomvc.com">you</a></p>
+	<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+</footer>
